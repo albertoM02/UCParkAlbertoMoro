@@ -6,10 +6,14 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>UCParkWeb</artifactId>
+  
   <packaging>war</packaging>
   
+  
+  <name>UCParkWeb</name>
+  
   	<build>
-		<finalName>UCParkWar</finalName>
+		<finalName>UCParkWAR</finalName>
 		<plugins>
 			<!--  Plugin para archivos war, puede ser util para 
 		 		algunos aspectos de configuración -->
@@ -24,4 +28,3 @@
 		</plugins>
 	</build>
 </project>
-

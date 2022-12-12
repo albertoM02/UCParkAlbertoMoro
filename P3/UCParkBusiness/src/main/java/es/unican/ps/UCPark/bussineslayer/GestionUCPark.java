@@ -37,24 +37,27 @@ public class GestionUCPark implements IGestionDenuncias, IGestionCuenta,
 	}
 
 	public Vehiculo eliminarVehiculo(String matricula) {
-		Vehiculo v = vehiculosDAO.vehiculo(matricula);
-		
+		vehiculosDAO.eliminarVehiculo(matricula);
 		return null;
 	}
 
 	public Vehiculo consultaVehiculo(String matricula) {
-		// TODO Auto-generated method stub
+		return vehiculosDAO.vehiculo(matricula);
+	}
+
+	public Estacionamiento añadirEstacionamiento(Estacionamiento e, String matricula) {
+		estacionamientosDAO.eliminarEstacionamiento(e);
+		Vehiculo v = vehiculosDAO.vehiculo(matricula);
+		v.setEstacionamientoEnVigor(e);
+		
 		return null;
 	}
 
-	public Estacionamiento añadrEstacionamiento(Estacionamiento e, String matricula) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Estacionamiento ampliarEstacionamiento(String ID) {
-		// TODO Auto-generated method stub
-		return null;
+	public Estacionamiento ampliarEstacionamiento(String ID, int tiempoAumento) {
+		Estacionamiento estacionamiento = estacionamientosDAO.estacionamiento(ID);
+		estacionamiento.setMinutos(estacionamiento.getMinutos() + tiempoAumento);
+		estacionamientosDAO.actualizaEstacionamiento(estacionamiento);
+		return estacionamiento;
 	}
 
 	public Estacionamiento eliminarEstacionamiento(String ID) {

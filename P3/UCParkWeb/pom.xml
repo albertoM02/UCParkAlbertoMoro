@@ -15,8 +15,6 @@
   	<build>
 		<finalName>UCParkWAR</finalName>
 		<plugins>
-			<!--  Plugin para archivos war, puede ser util para 
-		 		algunos aspectos de configuración -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>

@@ -7,7 +7,7 @@ import es.unican.ps.domain.Denuncia;
 public class DenunciasDAO implements IDenunciasDAOLocal, IDenunciasDAORemote {
 
 	public Denuncia creaDenuncia(Denuncia d) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 

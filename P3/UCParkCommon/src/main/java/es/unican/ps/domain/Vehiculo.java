@@ -14,6 +14,7 @@ public class Vehiculo implements Serializable {
 
 	private Usuario propietario;
 	private Estacionamiento estacionamientoEnVigor;
+	private Set<Estacionamiento> estacionamientosHistoricos;
 	
 	@Id
 	private String matricula;
@@ -56,6 +57,12 @@ public class Vehiculo implements Serializable {
 	}
 	public void setDenunciasEnVigor(Set<Denuncia> denunciasEnVigor) {
 		this.denunciasEnVigor = denunciasEnVigor;
+	}
+	public Set<Estacionamiento> getEstacionamientosHistoricos() {
+		return estacionamientosHistoricos;
+	}
+	public void setEstacionamientosHistoricos(Set<Estacionamiento> estacionamientosHistoricos) {
+		this.estacionamientosHistoricos = estacionamientosHistoricos;
 	}
 	
 }

@@ -7,7 +7,7 @@ import es.unican.ps.domain.Estacionamiento;
 public interface IEstacionamientosDAO {
 
 	Estacionamiento crearEstacionamiento(Estacionamiento e);
-	Estacionamiento eliminarEstacionamiento(Estacionamiento ID);
+	Estacionamiento eliminarEstacionamiento(String ID);
 	Estacionamiento actualizaEstacionamiento(Estacionamiento e);
 	Estacionamiento estacionamiento(String ID);
 	Set<Estacionamiento> estacionamientos();

@@ -192,6 +192,9 @@ public class GestionUCPark implements IGestionDenunciasLocal, IGestionDenunciasR
 
 	public Set<Denuncia> consultarDenuncia(String matricula) {
 		Vehiculo v = vehiculosDAO.vehiculo(matricula);
+		if (v == null) {
+			return null;
+		}
 		Set<Denuncia> des = v.getDenunciasEnVigor();
 		return des;
 	}

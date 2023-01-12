@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import es.unican.ps.UCPark.bussineslayer.GestionUCPark;
+import es.unican.ps.UCPark.bussineslayer.IGestionEstacionamientosRemote;
 import es.unican.ps.UCPark.daolayer.IEstacionamientosDAORemote;
 import es.unican.ps.UCPark.daolayer.IUsuariosDAORemote;
 import es.unican.ps.UCPark.daolayer.IVehiculosDAORemote;
@@ -34,8 +34,20 @@ public class NuevoEstacionamientoBean implements Serializable {
 	private IVehiculosDAORemote vehiculosDAO;
 
 	@EJB
-	private IEstacionamientosDAORemote estacionamientosDAO;
+	private IGestionEstacionamientosRemote estacionamientosDAO;
+	//@EJB
+	//private IEstacionamientosDAORemote estacionamientosDAO;
 	
+	public IGestionEstacionamientosRemote getEstacionamientosDAO() {
+		return estacionamientosDAO;
+	}
+
+
+	public void setEstacionamientosDAO(IGestionEstacionamientosRemote estacionamientosDAO) {
+		this.estacionamientosDAO = estacionamientosDAO;
+	}
+
+
 	private int minutos;
 	private List<String> matriculas;
 
@@ -43,7 +55,7 @@ public class NuevoEstacionamientoBean implements Serializable {
 	
 	private Usuario user;
 	
-	private LocalDateTime horaFin;
+	private LocalDateTime finaliza;
 
 	@PostConstruct
 	public void cargaInfo() {
@@ -80,8 +92,11 @@ public class NuevoEstacionamientoBean implements Serializable {
 		estacionamiento.setHoraInicio(ahora);
 		estacionamiento.setMinutos(minutos);
 		estacionamiento.setVehiculo(vehiculosDAO.vehiculo(matricula));
-		estacionamientosDAO.crearEstacionamiento(estacionamiento);
-		horaFin = LocalDateTime.now().plusMinutes(minutos);
+		//estacionamientosDAO.crearEstacionamiento(estacionamiento);
+		if(estacionamientosDAO.añadirEstacionamiento(estacionamiento,matricula) == null) {
+			return "minExcedidos";
+		}
+		finaliza = LocalDateTime.now().plusMinutes(minutos);
 		return "estacionamientoCreado.xhtml";
 	}
 	
@@ -138,6 +153,7 @@ public class NuevoEstacionamientoBean implements Serializable {
 	}
 
 
+	/**
 	public IEstacionamientosDAORemote getEstacionamientosDAO() {
 		return estacionamientosDAO;
 	}
@@ -146,15 +162,16 @@ public class NuevoEstacionamientoBean implements Serializable {
 	public void setEstacionamientosDAO(IEstacionamientosDAORemote estacionamientosDAO) {
 		this.estacionamientosDAO = estacionamientosDAO;
 	}
+	**/
 
 
-	public LocalDateTime getHoraFin() {
-		return horaFin;
+	public LocalDateTime getfinaliza() {
+		return finaliza;
 	}
 
 
-	public void setHoraFin(LocalDateTime horaFin) {
-		this.horaFin = horaFin;
+	public void setfinaliza(LocalDateTime finaliza) {
+		this.finaliza = finaliza;
 	}
 
 

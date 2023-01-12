@@ -17,13 +17,13 @@ public class EstacionamientosDAO implements IEstacionamientosDAOLocal, IEstacion
 	@PersistenceContext(unitName="UCPark")
 	private EntityManager em;
 	
-	public Estacionamiento crearEstacionamiento(Estacionamiento e) {
+	public Estacionamiento crearEstacionamiento(Estacionamiento estacionamiento) {
 		try {
-			em.persist(e);
+			em.persist(estacionamiento);
 		} catch (EntityExistsException f) {
 			return null;
 		}
-		return e;
+		return estacionamiento;
 	}
 
 	public Estacionamiento eliminarEstacionamiento(String id) {

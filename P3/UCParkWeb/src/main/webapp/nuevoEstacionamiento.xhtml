@@ -8,7 +8,7 @@ xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <h:body>
 	<h:form id="nuevoEstacionamiento">
-		<h:panelGrid columns="2">
+		
 		<h:selectOneMenu id="matricula" value="#{nuevoEstacionamientoBean.matricula}">
 			<h:outputLabel value="Vehículo " />
 				<f:selectItems value="#{nuevoEstacionamientoBean.matriculas}" />
@@ -17,11 +17,8 @@ xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html">
 			<br></br>
 			<h:outputLabel value="Minutos " />
 		<h:inputText id="minutos" value="#{nuevoEstacionamientoBean.minutos}" autocomplete="off" size="40"/>
-		
+		<br></br>
 		<h:commandButton id="botonEstacionamiento" value="Crear Estacionamiento" action="#{nuevoEstacionamientoBean.crearEstacionamiento}" style="width: 150px; "/>
-		
-			
-		</h:panelGrid>
 		
 		<br></br>
 	</h:form>	

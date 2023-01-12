@@ -18,11 +18,7 @@
     	<artifactId>UCParkCommon</artifactId>
     	<version>0.0.1-SNAPSHOT</version>
   	</dependency>
-  	  	<dependency>
-  	    <groupId>es.unican.ps</groupId>
-    	<artifactId>UCParkBusiness</artifactId>
-    	<version>0.0.1-SNAPSHOT</version>
-  	</dependency>
+
   </dependencies>
   
      

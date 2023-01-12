@@ -7,24 +7,30 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
-@NamedQueries({
-	@NamedQuery(name="vehiculos", query="SELECT v FROM Vehiculo v")
-})
 @Table(name="Vehiculo")
 public class Vehiculo implements Serializable {
 
+	@OneToOne
 	private Usuario propietario;
+	
+	@OneToOne
 	private Estacionamiento estacionamientoEnVigor;
+	
+	@OneToMany(mappedBy="Vehiculo")
 	private Set<Estacionamiento> estacionamientosHistoricos;
 	
 	@Id
 	private String matricula;
 	private String marca;
 	private String modelo;
+	
+	@OneToMany(mappedBy="VehiculoDenunciado")
 	private Set<Denuncia> denunciasEnVigor;
 	
 	public Usuario getPropietario() {

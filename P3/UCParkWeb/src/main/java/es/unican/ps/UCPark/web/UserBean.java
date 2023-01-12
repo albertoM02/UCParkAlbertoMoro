@@ -2,6 +2,7 @@ package es.unican.ps.UCPark.web;
 
 import java.io.Serializable;
 
+import es.unican.ps.UCPark.bussineslayer.IGestionCuentaRemote;
 import es.unican.ps.UCPark.daolayer.IUsuariosDAORemote;
 import es.unican.ps.domain.Usuario;
 import jakarta.ejb.EJB;
@@ -15,18 +16,18 @@ public class UserBean implements Serializable {
 	
 	private String email;
 	private String contrasenha;
-	private Usuario user;
+	private Usuario user = null;
 	
 
 
 	@EJB
-	private IUsuariosDAORemote userDAO;
+	private IGestionCuentaRemote userDAO;
 	
 	public String inicio() {
-		user = userDAO.usuario(email);
+		user = userDAO.login(email, contrasenha);
 		if(user == null) {
 			return "usuarioIncorrecto.xhtml";
-		}
+		} 
 		return "principal.xhtml";
 	}
 	
@@ -61,6 +62,15 @@ public class UserBean implements Serializable {
 		this.user = user;
 	}
 
+	public IGestionCuentaRemote getUserDAO() {
+		return userDAO;
+	}
+
+	public void setUserDAO(IGestionCuentaRemote userDAO) {
+		this.userDAO = userDAO;
+	}
+
+	/**
 	public IUsuariosDAORemote getUserDAO() {
 		return userDAO;
 	}
@@ -68,5 +78,5 @@ public class UserBean implements Serializable {
 	public void setUserDAO(IUsuariosDAORemote userDAO) {
 		this.userDAO = userDAO;
 	}
-
+	**/
 }

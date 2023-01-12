@@ -6,6 +6,7 @@ import java.sql.Time;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @SuppressWarnings("serial")
@@ -22,6 +23,7 @@ public class Estacionamiento implements Serializable {
 	private int minutos;
 	private Time horaInicio;
 	
+	@ManyToOne
 	private Vehiculo vehiculo;
 
 	public String getID() {

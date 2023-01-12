@@ -7,7 +7,9 @@ import java.util.Set;
 
 
 import es.unican.ps.UCPark.daolayer.IDenunciasDAOLocal;
+import es.unican.ps.UCPark.daolayer.IEstacionamientosDAO;
 import es.unican.ps.UCPark.daolayer.IEstacionamientosDAOLocal;
+import es.unican.ps.UCPark.daolayer.IUsuariosDAO;
 import es.unican.ps.UCPark.daolayer.IUsuariosDAOLocal;
 import es.unican.ps.UCPark.daolayer.IVehiculosDAO;
 import es.unican.ps.UCPark.daolayer.IVehiculosDAOLocal;
@@ -21,8 +23,9 @@ import jakarta.ejb.Stateless;
 import jakarta.ws.rs.ext.MessageBodyWriter;
 
 @Stateless
-public class GestionUCPark implements IGestionDenuncias, IGestionCuenta, 
-										IGestionEstacionamientos, IGestionVehiculos {
+public class GestionUCPark implements IGestionDenunciasLocal, IGestionDenunciasRemote, IGestionCuentaLocal, IGestionCuentaRemote,
+										IGestionEstacionamientosLocal, IGestionEstacionamientosRemote, IGestionVehiculosLocal, 
+										IGestionVehiculosRemote {
 
 	@EJB
 	private IDenunciasDAOLocal denunciasDAO;
@@ -40,29 +43,66 @@ public class GestionUCPark implements IGestionDenuncias, IGestionCuenta,
 		
 	}
 	
-	public GestionUCPark(IEstacionamientosDAOLocal estacionamiento) {
-		this.estacionamientosDAO = estacionamiento;
+	public GestionUCPark(IEstacionamientosDAO estacionamiento) {
+		this.estacionamientosDAO = (IEstacionamientosDAOLocal) estacionamiento;
 	}
 	
+	
+	/**
+	 * Null si el vehiculo existe o el propietario no existe
+	 * En otro caso crea el vehículo y lo retorna.
+	 */
 	public Vehiculo añadirVehiculo(Vehiculo v, Usuario u) {
-		vehiculosDAO.creaVehiculo(v);
-		
-		return null;
+		Vehiculo anhadido = null;
+		if (vehiculosDAO.vehiculo(v.getMatricula()) == null && usuariosDAO.usuario(u.getEmail()) != null) {
+			anhadido = vehiculosDAO.creaVehiculo(v);
+			List<Vehiculo> nuevaLista = u.getVehiculos();
+			nuevaLista.add(anhadido);
+			u.setVehiculos(nuevaLista);
+			usuariosDAO.actualizaUsuario(u);
+		}
+
+		return anhadido;
 	}
 
+	/**
+	 * Null si el vehiculo no existe.
+	 * En otro caso lo borra y se lo elimina al propietario.
+	 */
 	public Vehiculo eliminarVehiculo(String matricula) {
+		Vehiculo vehiculo = vehiculosDAO.vehiculo(matricula);
+		if (vehiculo == null) {
+			return null;
+		} 
+		Usuario propietario = usuariosDAO.usuario(vehiculo.getPropietario().getEmail());
+		List<Vehiculo> ves = propietario.getVehiculos();
+		ves.remove(vehiculo);
+		propietario.setVehiculos(ves);
+		usuariosDAO.actualizaUsuario(propietario);
 		vehiculosDAO.eliminarVehiculo(matricula);
-		return null;
+		return vehiculosDAO.eliminarVehiculo(matricula);
 	}
 
+	/**
+	 * Devuelve el vehiculo o null si no existe.
+	 */
 	public Vehiculo consultaVehiculo(String matricula) {
 		return vehiculosDAO.vehiculo(matricula);
 	}
 
+	/**
+	 * Si excede más de 120 minutos o el vehiculo no existe, devuelve null, si no
+	 * el estacionamiento anhadido.
+	 */
 	public Estacionamiento añadirEstacionamiento(Estacionamiento e, String matricula) {
 		Vehiculo v = vehiculosDAO.vehiculo(matricula);
+		if (v == null || e.getMinutos() > 120) {
+			return null;
+		} 
 		v.setEstacionamientoEnVigor(e);
+		v.getEstacionamientosHistoricos().add(e);
 		estacionamientosDAO.crearEstacionamiento(e);
+		vehiculosDAO.actualizaVehiculo(v);
 		return e;
 	}
 
@@ -97,26 +137,57 @@ public class GestionUCPark implements IGestionDenuncias, IGestionCuenta,
 		}
 		return estacionamientos;
 	}
+	
+	//No he logrado que funcione con un Timer
+	public Estacionamiento terminarEstacionamiento(String ID) {
+		Estacionamiento estacionamiento = estacionamientosDAO.estacionamiento(ID);
+		if(estacionamiento != null) {
+			Vehiculo vehiculo = estacionamiento.getVehiculo();
+			vehiculo.setEstacionamientoEnVigor(null);
+			vehiculosDAO.actualizaVehiculo(vehiculo);
+		}
+		return estacionamiento;
+	}
 
 	public Usuario registrarse(Usuario u) {
-		Usuario user = usuariosDAO.creaUsuarios(u);
-		return user;
+		if (usuariosDAO.usuario(u.getEmail()) == null) {
+			usuariosDAO.creaUsuarios(u);
+			return u;
+		}
+		return null;
 	}
 
-	public Denuncia añadirDenuncia(Denuncia d, String matricula) {
+	public Denuncia añadirDenuncia(Denuncia denuncia, String matricula) {
 		Vehiculo v = vehiculosDAO.vehiculo(matricula);
+		Denuncia den = denunciasDAO.denuncia(denuncia.getID());
+		if(den != null) {
+			return null; //Ya existe
+		}
+		if(v == null) {
+			return null;
+		}
 		Set<Denuncia> des = v.getDenunciasEnVigor();
-		des.add(d);
+		des.add(denuncia);
 		v.setDenunciasEnVigor(des);
-		return d;
+		denunciasDAO.creaDenuncia(denuncia);
+		vehiculosDAO.actualizaVehiculo(v);
+		return denuncia;
 	}
 
-	public Denuncia eliminaDenuncia(Denuncia d, String matricula) {
+	public Denuncia eliminaDenuncia(Denuncia denuncia, String matricula) {
 		Vehiculo v = vehiculosDAO.vehiculo(matricula);
+		Denuncia den = denunciasDAO.denuncia(denuncia.getID());
+		if(den == null) {
+			return null; //No existe
+		}
+		if(v == null) {
+			return null;
+		}
 		Set<Denuncia> des = v.getDenunciasEnVigor();
-		des.remove(d);
+		des.remove(denuncia);
 		v.setDenunciasEnVigor(des);
-		return d;
+		vehiculosDAO.actualizaVehiculo(v);
+		return denuncia;
 	}
 
 	public Set<Denuncia> consultarDenuncia(String matricula) {
@@ -124,6 +195,22 @@ public class GestionUCPark implements IGestionDenuncias, IGestionCuenta,
 		Set<Denuncia> des = v.getDenunciasEnVigor();
 		return des;
 	}
+
+	@Override
+	public Usuario consultarUsuario(String email) {
+		return usuariosDAO.usuario(email);
+	}
+
+	@Override
+	public Usuario login(String email, String contrasenha) {
+		Usuario user = usuariosDAO.usuario(email);
+		//Si la contrasenha es incorrecta o no existe.
+		if(user == null || !user.getContraseña().equals(contrasenha)) {
+			return null;
+		}
+		return user;
+	}
+
 
 
 

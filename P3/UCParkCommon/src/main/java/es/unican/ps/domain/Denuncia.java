@@ -7,6 +7,8 @@ import java.util.Set;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @SuppressWarnings("serial")
@@ -22,6 +24,8 @@ public class Denuncia implements Serializable {
 	private double importe;
 	private String causa;
 	
+	
+	@ManyToOne
 	private Vehiculo vehiculoDenunciado;
 	
 	public String getID() {

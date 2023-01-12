@@ -35,8 +35,7 @@ public class NuevoEstacionamientoBean implements Serializable {
 
 	@EJB
 	private IGestionEstacionamientosRemote estacionamientosDAO;
-	//@EJB
-	//private IEstacionamientosDAORemote estacionamientosDAO;
+
 	
 	public IGestionEstacionamientosRemote getEstacionamientosDAO() {
 		return estacionamientosDAO;
@@ -92,7 +91,7 @@ public class NuevoEstacionamientoBean implements Serializable {
 		estacionamiento.setHoraInicio(ahora);
 		estacionamiento.setMinutos(minutos);
 		estacionamiento.setVehiculo(vehiculosDAO.vehiculo(matricula));
-		//estacionamientosDAO.crearEstacionamiento(estacionamiento);
+		
 		if(estacionamientosDAO.añadirEstacionamiento(estacionamiento,matricula) == null) {
 			return "minExcedidos";
 		}
@@ -151,18 +150,6 @@ public class NuevoEstacionamientoBean implements Serializable {
 	public void setUser(Usuario user) {
 		this.user = user;
 	}
-
-
-	/**
-	public IEstacionamientosDAORemote getEstacionamientosDAO() {
-		return estacionamientosDAO;
-	}
-
-
-	public void setEstacionamientosDAO(IEstacionamientosDAORemote estacionamientosDAO) {
-		this.estacionamientosDAO = estacionamientosDAO;
-	}
-	**/
 
 
 	public LocalDateTime getfinaliza() {

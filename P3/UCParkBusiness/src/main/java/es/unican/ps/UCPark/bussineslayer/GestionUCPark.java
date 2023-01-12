@@ -96,7 +96,7 @@ public class GestionUCPark implements IGestionDenunciasLocal, IGestionDenunciasR
 	 */
 	public Estacionamiento añadirEstacionamiento(Estacionamiento e, String matricula) {
 		Vehiculo v = vehiculosDAO.vehiculo(matricula);
-		if (v == null || e.getMinutos() > 120) {
+		if (v == null || e.getMinutos() > 120 || e.getMinutos() < 0) {
 			return null;
 		} 
 		v.setEstacionamientoEnVigor(e);

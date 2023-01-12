@@ -1,13 +1,17 @@
 package es.unican.ps.UCPark.bussineslayer;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
 
 import es.unican.ps.UCPark.daolayer.IDenunciasDAOLocal;
 import es.unican.ps.UCPark.daolayer.IEstacionamientosDAOLocal;
 import es.unican.ps.UCPark.daolayer.IUsuariosDAOLocal;
 import es.unican.ps.UCPark.daolayer.IVehiculosDAO;
 import es.unican.ps.UCPark.daolayer.IVehiculosDAOLocal;
+import es.unican.ps.UCPark.daolayer.IVehiculosDAORemote;
 import es.unican.ps.domain.Denuncia;
 import es.unican.ps.domain.Estacionamiento;
 import es.unican.ps.domain.Usuario;
@@ -32,6 +36,13 @@ public class GestionUCPark implements IGestionDenuncias, IGestionCuenta,
 	@EJB
 	private IVehiculosDAOLocal vehiculosDAO;
 	
+	public GestionUCPark() {
+		
+	}
+	
+	public GestionUCPark(IEstacionamientosDAOLocal estacionamiento) {
+		this.estacionamientosDAO = estacionamiento;
+	}
 	
 	public Vehiculo añadirVehiculo(Vehiculo v, Usuario u) {
 		vehiculosDAO.creaVehiculo(v);
@@ -51,12 +62,18 @@ public class GestionUCPark implements IGestionDenuncias, IGestionCuenta,
 	public Estacionamiento añadirEstacionamiento(Estacionamiento e, String matricula) {
 		Vehiculo v = vehiculosDAO.vehiculo(matricula);
 		v.setEstacionamientoEnVigor(e);
-		
-		return null;
+		estacionamientosDAO.crearEstacionamiento(e);
+		return e;
 	}
 
 	public Estacionamiento ampliarEstacionamiento(String ID, int tiempoAumento) {
+		if (tiempoAumento < 0 || tiempoAumento > 120) {
+			return null;
+		}
 		Estacionamiento estacionamiento = estacionamientosDAO.estacionamiento(ID);
+		if (estacionamiento == null) {
+			return null;
+		}
 		estacionamiento.setMinutos(estacionamiento.getMinutos() + tiempoAumento);
 		estacionamientosDAO.actualizaEstacionamiento(estacionamiento);
 		return estacionamiento;
@@ -73,7 +90,7 @@ public class GestionUCPark implements IGestionDenuncias, IGestionCuenta,
 	}
 
 	public Set<Estacionamiento> consultarEstacionamientos(Usuario u) {
-		Set<Vehiculo> vehiculos = u.getVehiculos();
+		List<Vehiculo> vehiculos = u.getVehiculos();
 		Set<Estacionamiento> estacionamientos = new HashSet<Estacionamiento>();
 		for (Vehiculo vehiculo : vehiculos) {
 			estacionamientos.addAll(vehiculo.getEstacionamientosHistoricos());
@@ -82,23 +99,32 @@ public class GestionUCPark implements IGestionDenuncias, IGestionCuenta,
 	}
 
 	public Usuario registrarse(Usuario u) {
-		// TODO Auto-generated method stub
-		return null;
+		Usuario user = usuariosDAO.creaUsuarios(u);
+		return user;
 	}
 
 	public Denuncia añadirDenuncia(Denuncia d, String matricula) {
-		// TODO Auto-generated method stub
-		return null;
+		Vehiculo v = vehiculosDAO.vehiculo(matricula);
+		Set<Denuncia> des = v.getDenunciasEnVigor();
+		des.add(d);
+		v.setDenunciasEnVigor(des);
+		return d;
 	}
 
-	public Denuncia eliminaDenuncia(String ID) {
-		// TODO Auto-generated method stub
-		return null;
+	public Denuncia eliminaDenuncia(Denuncia d, String matricula) {
+		Vehiculo v = vehiculosDAO.vehiculo(matricula);
+		Set<Denuncia> des = v.getDenunciasEnVigor();
+		des.remove(d);
+		v.setDenunciasEnVigor(des);
+		return d;
 	}
 
-	public Denuncia consultarDenuncia(String ID) {
-		// TODO Auto-generated method stub
-		return null;
+	public Set<Denuncia> consultarDenuncia(String matricula) {
+		Vehiculo v = vehiculosDAO.vehiculo(matricula);
+		Set<Denuncia> des = v.getDenunciasEnVigor();
+		return des;
 	}
+
+
 
 }

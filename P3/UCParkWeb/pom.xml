@@ -6,6 +6,28 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>UCParkWeb</artifactId>
+  <properties>
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+  </properties>
+  
+    
+    <dependencies>
+  	<dependency>
+  	    <groupId>es.unican.ps</groupId>
+    	<artifactId>UCParkCommon</artifactId>
+    	<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  	  	<dependency>
+  	    <groupId>es.unican.ps</groupId>
+    	<artifactId>UCParkBusiness</artifactId>
+    	<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  </dependencies>
+  
+     
+
+
   
   <packaging>war</packaging>
   

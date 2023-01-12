@@ -5,10 +5,15 @@ import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
+@NamedQueries({
+	@NamedQuery(name="vehiculos", query="SELECT v FROM Vehiculo v")
+})
 @Table(name="Vehiculo")
 public class Vehiculo implements Serializable {
 

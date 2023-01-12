@@ -10,11 +10,11 @@
   
 
   <modules>
-  	<module>UCParkDao</module>
   	<module>UCParkDAO</module>
   	<module>UCParkBusiness</module>
   	<module>UCParkWeb</module>
   	<module>UCParkCommon</module>
+  	<module>UCParkModuleEAR</module>
   </modules>
   
   	<dependencies>	
